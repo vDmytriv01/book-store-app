@@ -36,7 +36,6 @@ public class BookRepositoryImpl implements BookRepository {
         } catch (PersistenceException e) {
             throw new RepositoryException("Couldn't find books ", e);
         }
-
     }
 
     @Override
