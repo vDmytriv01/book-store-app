@@ -7,6 +7,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -36,5 +37,15 @@ public class BookRepositoryImpl implements BookRepository {
             throw new RepositoryException("Couldn't find books ", e);
         }
 
+    }
+
+    @Override
+    public Optional<Book> findById(Long id) {
+        try {
+            Book book = entityManager.find(Book.class, id);
+            return Optional.ofNullable(book);
+        } catch (PersistenceException e) {
+            throw new RepositoryException("Couldn't find book " + id, e);
+        }
     }
 }
