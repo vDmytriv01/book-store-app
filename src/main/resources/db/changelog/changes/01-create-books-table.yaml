@@ -35,12 +35,12 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: description
-                  type: VARCHAR(1000)
+                  type: VARCHAR(255)
               - column:
                   name: cover_image
                   type: VARCHAR(500)
               - column:
-                  name: deleted
+                  name: is_deleted
                   type: BIT(1)
                   defaultValueBoolean: false
                   constraints:
