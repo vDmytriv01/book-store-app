@@ -10,14 +10,16 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "books")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Where(clause = "deleted = false")
+@SQLRestriction("deleted = false")
+@SQLDelete(sql = "UPDATE books SET deleted = true WHERE id = ?")
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

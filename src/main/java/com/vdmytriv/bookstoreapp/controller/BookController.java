@@ -40,7 +40,6 @@ public class BookController {
         return bookService.save(requestDto);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public BookDto updateBook(
             @PathVariable Long id,
