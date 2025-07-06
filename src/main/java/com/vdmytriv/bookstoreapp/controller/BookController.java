@@ -1,6 +1,7 @@
 package com.vdmytriv.bookstoreapp.controller;
 
 import com.vdmytriv.bookstoreapp.dto.BookDto;
+import com.vdmytriv.bookstoreapp.dto.BookSearchParametersDto;
 import com.vdmytriv.bookstoreapp.dto.CreateBookRequestDto;
 import com.vdmytriv.bookstoreapp.dto.UpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.service.BookService;
@@ -32,6 +33,11 @@ public class BookController {
     @GetMapping("/{id}")
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.findById(id);
+    }
+
+    @GetMapping("/search")
+    public List<BookDto> searchBooks(BookSearchParametersDto params) {
+        return bookService.search(params);
     }
 
     @ResponseStatus(HttpStatus.CREATED)

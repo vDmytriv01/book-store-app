@@ -1,14 +1,17 @@
 package com.vdmytriv.bookstoreapp.service;
 
 import com.vdmytriv.bookstoreapp.dto.BookDto;
+import com.vdmytriv.bookstoreapp.dto.BookSearchParametersDto;
 import com.vdmytriv.bookstoreapp.dto.CreateBookRequestDto;
 import com.vdmytriv.bookstoreapp.dto.UpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.exception.EntityNotFoundException;
 import com.vdmytriv.bookstoreapp.mapper.BookMapper;
 import com.vdmytriv.bookstoreapp.model.Book;
-import com.vdmytriv.bookstoreapp.repository.BookRepository;
+import com.vdmytriv.bookstoreapp.repository.book.BookRepository;
+import com.vdmytriv.bookstoreapp.repository.book.BookSpecificationBuilder;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -17,6 +20,7 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final BookSpecificationBuilder bookSpecificationBuilder;
 
     @Override
     public BookDto save(CreateBookRequestDto requestDto) {
@@ -51,6 +55,14 @@ public class BookServiceImpl implements BookService {
         if (bookRepository.existsById(id)) {
             bookRepository.deleteById(id);
         }
+    }
+
+    @Override
+    public List<BookDto> search(BookSearchParametersDto params) {
+        Specification<Book> spec = bookSpecificationBuilder.build(params);
+        return bookRepository.findAll(spec).stream()
+                .map(bookMapper::toDto)
+                .toList();
     }
 }
 
