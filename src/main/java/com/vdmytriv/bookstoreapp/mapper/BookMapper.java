@@ -6,13 +6,13 @@ import com.vdmytriv.bookstoreapp.dto.CreateBookRequestDto;
 import com.vdmytriv.bookstoreapp.dto.PartialUpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.dto.UpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.model.Book;
-import org.mapstruct.AfterMapping;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(config = MapperConfig.class,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(config = MapperConfig.class)
 public interface BookMapper {
 
     BookDto toDto(Book book);
@@ -23,16 +23,10 @@ public interface BookMapper {
             UpdateBookRequestDto updateBookRequestDto,
             @MappingTarget Book book);
 
-    @AfterMapping
-    default void partialUpdateModel(
+    @BeanMapping(
+            nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+            nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+    void partialUpdateModel(
             PartialUpdateBookRequestDto dto,
-            @MappingTarget Book book) {
-        dto.title().ifPresent(book::setTitle);
-        dto.author().ifPresent(book::setAuthor);
-        dto.isbn().ifPresent(book::setIsbn);
-        dto.price().ifPresent(book::setPrice);
-        dto.description().ifPresent(book::setDescription);
-        dto.coverImage().ifPresent(book::setCoverImage);
-    }
+            @MappingTarget Book book);
 }
-
