@@ -1,10 +1,10 @@
 package com.vdmytriv.bookstoreapp.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 public record CreateBookRequestDto(
@@ -20,7 +20,7 @@ public record CreateBookRequestDto(
         String isbn,
         @Schema(description = "Price of the book", example = "49.99")
         @NotNull
-        @Min(0)
+        @PositiveOrZero
         BigDecimal price,
         @Schema(description = "Description of the book",
                 example = "A book about Java best practices.")

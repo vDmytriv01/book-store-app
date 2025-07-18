@@ -1,6 +1,7 @@
 package com.vdmytriv.bookstoreapp.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 public record BookDto(
@@ -13,6 +14,7 @@ public record BookDto(
         @Schema(description = "ISBN number", example = "978-3-16-148410-0")
         String isbn,
         @Schema(description = "Price of the book", example = "49.99")
+        @PositiveOrZero
         BigDecimal price,
         @Schema(description = "Book description", example = "A book about Java best practices.")
         String description,
