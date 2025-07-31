@@ -1,10 +1,10 @@
 package com.vdmytriv.bookstoreapp.mapper;
 
 import com.vdmytriv.bookstoreapp.config.MapperConfig;
-import com.vdmytriv.bookstoreapp.dto.BookDto;
-import com.vdmytriv.bookstoreapp.dto.CreateBookRequestDto;
-import com.vdmytriv.bookstoreapp.dto.PartialUpdateBookRequestDto;
-import com.vdmytriv.bookstoreapp.dto.UpdateBookRequestDto;
+import com.vdmytriv.bookstoreapp.dto.book.BookDto;
+import com.vdmytriv.bookstoreapp.dto.book.CreateBookRequestDto;
+import com.vdmytriv.bookstoreapp.dto.book.PartialUpdateBookRequestDto;
+import com.vdmytriv.bookstoreapp.dto.book.UpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.model.Book;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;

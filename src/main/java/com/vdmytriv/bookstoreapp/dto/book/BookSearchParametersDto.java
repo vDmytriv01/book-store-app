@@ -1,4 +1,4 @@
-package com.vdmytriv.bookstoreapp.dto;
+package com.vdmytriv.bookstoreapp.dto.book;
 
 import com.vdmytriv.bookstoreapp.validation.PriceRangeValidation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

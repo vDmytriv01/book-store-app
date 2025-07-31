@@ -1,11 +1,11 @@
 package com.vdmytriv.bookstoreapp.controller;
 
-import com.vdmytriv.bookstoreapp.dto.BookDto;
-import com.vdmytriv.bookstoreapp.dto.BookSearchParametersDto;
-import com.vdmytriv.bookstoreapp.dto.CreateBookRequestDto;
-import com.vdmytriv.bookstoreapp.dto.PartialUpdateBookRequestDto;
-import com.vdmytriv.bookstoreapp.dto.UpdateBookRequestDto;
-import com.vdmytriv.bookstoreapp.service.BookService;
+import com.vdmytriv.bookstoreapp.dto.book.BookDto;
+import com.vdmytriv.bookstoreapp.dto.book.BookSearchParametersDto;
+import com.vdmytriv.bookstoreapp.dto.book.CreateBookRequestDto;
+import com.vdmytriv.bookstoreapp.dto.book.PartialUpdateBookRequestDto;
+import com.vdmytriv.bookstoreapp.dto.book.UpdateBookRequestDto;
+import com.vdmytriv.bookstoreapp.service.book.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

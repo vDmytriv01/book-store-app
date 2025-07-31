@@ -1,10 +1,10 @@
-package com.vdmytriv.bookstoreapp.service;
+package com.vdmytriv.bookstoreapp.service.book;
 
-import com.vdmytriv.bookstoreapp.dto.BookDto;
-import com.vdmytriv.bookstoreapp.dto.BookSearchParametersDto;
-import com.vdmytriv.bookstoreapp.dto.CreateBookRequestDto;
-import com.vdmytriv.bookstoreapp.dto.PartialUpdateBookRequestDto;
-import com.vdmytriv.bookstoreapp.dto.UpdateBookRequestDto;
+import com.vdmytriv.bookstoreapp.dto.book.BookDto;
+import com.vdmytriv.bookstoreapp.dto.book.BookSearchParametersDto;
+import com.vdmytriv.bookstoreapp.dto.book.CreateBookRequestDto;
+import com.vdmytriv.bookstoreapp.dto.book.PartialUpdateBookRequestDto;
+import com.vdmytriv.bookstoreapp.dto.book.UpdateBookRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

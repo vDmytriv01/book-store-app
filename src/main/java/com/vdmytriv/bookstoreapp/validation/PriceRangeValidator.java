@@ -1,6 +1,6 @@
 package com.vdmytriv.bookstoreapp.validation;
 
-import com.vdmytriv.bookstoreapp.dto.BookSearchParametersDto;
+import com.vdmytriv.bookstoreapp.dto.book.BookSearchParametersDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.math.BigDecimal;
