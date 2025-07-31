@@ -1,6 +1,6 @@
 package com.vdmytriv.bookstoreapp.repository.book;
 
-import com.vdmytriv.bookstoreapp.dto.BookSearchParametersDto;
+import com.vdmytriv.bookstoreapp.dto.book.BookSearchParametersDto;
 import com.vdmytriv.bookstoreapp.model.Book;
 import com.vdmytriv.bookstoreapp.repository.SpecificationBuilder;
 import com.vdmytriv.bookstoreapp.repository.SpecificationProviderManager;
