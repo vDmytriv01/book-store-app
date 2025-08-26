@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 07-assign-roles-to-users
+      author: vdmytriv
+      changes:
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT u.id FROM users u WHERE u.email = 'admin@mail.com')"
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT r.id FROM roles r WHERE r.name = 'ADMIN')"
+
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT u.id FROM users u WHERE u.email = 'user@mail.com')"
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT r.id FROM roles r WHERE r.name = 'USER')"
