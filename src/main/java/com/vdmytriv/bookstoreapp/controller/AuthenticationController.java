@@ -23,7 +23,7 @@ public class AuthenticationController {
     private final UserService userService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/register")
+    @PostMapping("/registration")
     @Operation(summary = "Register user", description = "Creates a new user account.")
     public UserResponseDto registration(@Valid @RequestBody UserRegisterRequestDto requestDto) {
         return userService.registration(requestDto);

@@ -9,6 +9,7 @@ import com.vdmytriv.bookstoreapp.model.RoleName;
 import com.vdmytriv.bookstoreapp.model.User;
 import com.vdmytriv.bookstoreapp.repository.role.RoleRepository;
 import com.vdmytriv.bookstoreapp.repository.user.UserRepository;
+import jakarta.transaction.Transactional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -28,7 +30,8 @@ public class UserServiceImpl implements UserService {
             throw new RegistrationException("User already exists with email " + requestDto.email());
         }
         Role userRole = roleRepository.findByName(RoleName.USER)
-                .orElseThrow(() -> new RuntimeException("Default role USER not found"));
+                .orElseThrow(() -> new RuntimeException(
+                        "Default role " + RoleName.USER + " not found"));
 
         User user = userMapper.toModel(requestDto);
         user.setRoles(Set.of(userRole));
