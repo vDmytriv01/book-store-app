@@ -8,6 +8,7 @@ import com.vdmytriv.bookstoreapp.dto.book.UpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.service.book.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -33,10 +35,12 @@ import org.springframework.web.bind.annotation.RestController;
         produces = "application/json"
 )
 @Tag(name = "Books", description = "Endpoints for managing books")
+@SecurityRequirement(name = "basicAuth")
 public class BookController {
 
     private final BookService bookService;
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping
     @Operation(summary = "Get all books",
             description = "Retrieves all books with pagination and sorting.")
@@ -45,6 +49,7 @@ public class BookController {
         return bookService.findAll(pageable);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{id}")
     @Operation(summary = "Get a book by ID",
             description = "Retrieves a single book by its ID.")
@@ -53,6 +58,7 @@ public class BookController {
         return bookService.findById(id);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/search")
     @Operation(summary = "Search books",
             description = "Search books by filters with pagination.")
@@ -62,6 +68,7 @@ public class BookController {
         return bookService.search(params, pageable);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     @Operation(summary = "Create a new book",
@@ -70,6 +77,7 @@ public class BookController {
         return bookService.save(requestDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Update a book",
             description = "Replaces all fields of a book.")
@@ -79,6 +87,7 @@ public class BookController {
         return bookService.update(id, requestDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     @Operation(summary = "Partially update a book",
             description = "Updates specified fields of a book.")
@@ -88,6 +97,7 @@ public class BookController {
         return bookService.patch(id, requestDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a book",

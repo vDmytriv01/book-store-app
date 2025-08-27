@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 06-seed-users
+      author: vdmytriv
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: email, value: "admin@mail.com" }
+              - column: { name: password, value: "$2a$10$SPHz4mCU/1mRoJny9gh.wO8pNfddgLkTYna.4AccryAlEQVdfba2K" } # bcrypt(1234)
+              - column: { name: first_name, value: "First_Name_Admin" }
+              - column: { name: last_name, value: "Last_Name_Admin" }
+              - column: { name: shipping_address, value: "N/A" }
+              - column: { name: is_deleted, valueBoolean: false }
+
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: email, value: "user@mail.com" }
+              - column: { name: password, value: "$2a$10$SPHz4mCU/1mRoJny9gh.wO8pNfddgLkTYna.4AccryAlEQVdfba2K" } # bcrypt(1234)
+              - column: { name: first_name, value: "First_Name_User" }
+              - column: { name: last_name, value: "Last_Name_User" }
+              - column: { name: shipping_address, value: "N/A" }
+              - column: { name: is_deleted, valueBoolean: false }
