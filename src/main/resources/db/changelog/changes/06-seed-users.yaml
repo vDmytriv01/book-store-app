@@ -7,7 +7,7 @@ databaseChangeLog:
             tableName: users
             columns:
               - column: { name: email, value: "admin@mail.com" }
-              - column: { name: password, value: "$2a$10$SPHz4mCU/1mRoJny9gh.wO8pNfddgLkTYna.4AccryAlEQVdfba2K" } # bcrypt(1234)
+              - column: { name: password, value: "$2a$10$1yCVFIfr4QBjYYCAUkFlUuavUUGMSacT2t9k0a11e8aXnQ5pHKVbG" } # bcrypt(12345678)
               - column: { name: first_name, value: "First_Name_Admin" }
               - column: { name: last_name, value: "Last_Name_Admin" }
               - column: { name: shipping_address, value: "N/A" }
@@ -17,7 +17,7 @@ databaseChangeLog:
             tableName: users
             columns:
               - column: { name: email, value: "user@mail.com" }
-              - column: { name: password, value: "$2a$10$SPHz4mCU/1mRoJny9gh.wO8pNfddgLkTYna.4AccryAlEQVdfba2K" } # bcrypt(1234)
+              - column: { name: password, value: "$2a$10$1yCVFIfr4QBjYYCAUkFlUuavUUGMSacT2t9k0a11e8aXnQ5pHKVbG" } # bcrypt(123445678)
               - column: { name: first_name, value: "First_Name_User" }
               - column: { name: last_name, value: "Last_Name_User" }
               - column: { name: shipping_address, value: "N/A" }
