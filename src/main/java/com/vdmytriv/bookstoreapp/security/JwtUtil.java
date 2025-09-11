@@ -1,13 +1,14 @@
 package com.vdmytriv.bookstoreapp.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.function.Function;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,37 +24,36 @@ public class JwtUtil {
         this.expirationMs = expirationMs;
     }
 
-    public String generateToken(UserDetails user) {
+    public String generateToken(String username) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expirationMs);
 
         return Jwts.builder()
-                .subject(user.getUsername())
+                .subject(username)
                 .issuedAt(now)
                 .expiration(expiry)
-
                 .signWith(key, Jwts.SIG.HS256)
                 .compact();
     }
 
-    public String extractUsername(String token) {
-        return parseClaims(token).getSubject();
+    public boolean isValidToken(String token) {
+        try {
+            return !getClaimFromToken(token, Claims::getExpiration).before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new JwtException("Expired or invalid JWT token", e);
+        }
     }
 
-    public boolean validateToken(String token, UserDetails user) {
-        String username = extractUsername(token);
-        return username.equals(user.getUsername()) && !isExpired(token);
+    public String getUserName(String token) {
+        return getClaimFromToken(token, Claims::getSubject);
     }
 
-    private boolean isExpired(String token) {
-        return parseClaims(token).getExpiration().before(new Date());
-    }
-
-    private Claims parseClaims(String token) {
-        return Jwts.parser()
+    private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = Jwts.parser()
                 .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+        return claimsResolver.apply(claims);
     }
 }
