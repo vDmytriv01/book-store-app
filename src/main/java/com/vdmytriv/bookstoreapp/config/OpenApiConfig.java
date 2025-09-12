@@ -12,6 +12,7 @@ public class OpenApiConfig {
     private static final String SECURITY_SCHEME_NAME = "BearerAuth";
     private static final String SECURITY_SCHEME = "bearer";
     private static final String BEARER_FORMAT = "JWT";
+
     @Bean
     public OpenAPI customOpenApi() {
         return new OpenAPI()
