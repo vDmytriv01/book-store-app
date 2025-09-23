@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: 12-assign-category-to-book
+      author: vdmytriv
+      changes:
+        # Книга 1: The Hobbit -> Fiction + History
+        - insert:
+            tableName: book_category
+            columns:
+              - column: { name: book_id, value: "1" }
+              - column: { name: category_id, value: "1" }   # Fiction
+        - insert:
+            tableName: book_category
+            columns:
+              - column: { name: book_id, value: "1" }
+              - column: { name: category_id, value: "3" }   # History
+
+        # Книга 2: A Brief History of Time -> Science + History
+        - insert:
+            tableName: book_category
+            columns:
+              - column: { name: book_id, value: "2" }
+              - column: { name: category_id, value: "2" }   # Science
+        - insert:
+            tableName: book_category
+            columns:
+              - column: { name: book_id, value: "2" }
+              - column: { name: category_id, value: "3" }   # History
+
+        # Книга 3: Sapiens -> одна категорія (History)
+        - insert:
+            tableName: book_category
+            columns:
+              - column: { name: book_id, value: "3" }
+              - column: { name: category_id, value: "3" }   # History
+
+        # Книга 4: 1984 -> одна категорія (Fiction)
+        - insert:
+            tableName: book_category
+            columns:
+              - column: { name: book_id, value: "4" }
+              - column: { name: category_id, value: "1" }   # Fiction
+
+        # Книга 5: Guns, Germs, and Steel -> одна категорія (History)
+        - insert:
+            tableName: book_category
+            columns:
+              - column: { name: book_id, value: "5" }
+              - column: { name: category_id, value: "3" }   # History

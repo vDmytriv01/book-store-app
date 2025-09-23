@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
+import java.util.List;
 
 public record PartialUpdateBookRequestDto(
         @Schema(description = "Title of the book", example = "Updated Title")
@@ -19,6 +20,8 @@ public record PartialUpdateBookRequestDto(
         @Schema(description = "Description of the book", example = "Updated description.")
         String description,
         @Schema(description = "URL of the book cover image", example = "https://example.com/updated-cover.jpg")
-        String coverImage
+        String coverImage,
+        @Schema(description = "IDs of categories the book belongs to", example = "[1, 2]")
+        List<Long> categoryIds
 ) {
 }

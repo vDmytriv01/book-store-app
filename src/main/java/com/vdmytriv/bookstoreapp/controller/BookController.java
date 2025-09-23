@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
         produces = "application/json"
 )
 @Tag(name = "Books", description = "Endpoints for managing books")
-@SecurityRequirement(name = "basicAuth")
+@SecurityRequirement(name = "BearerAuth")
 public class BookController {
 
     private final BookService bookService;
