@@ -4,17 +4,13 @@ import com.vdmytriv.bookstoreapp.config.MapperConfig;
 import com.vdmytriv.bookstoreapp.dto.book.BookDto;
 import com.vdmytriv.bookstoreapp.dto.book.BookDtoWithoutCategoryIds;
 import com.vdmytriv.bookstoreapp.dto.book.CreateBookRequestDto;
-import com.vdmytriv.bookstoreapp.dto.book.PartialUpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.dto.book.UpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.model.Book;
 import com.vdmytriv.bookstoreapp.model.Category;
 import java.util.List;
 import org.mapstruct.AfterMapping;
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValueCheckStrategy;
-import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(config = MapperConfig.class)
 public interface BookMapper {
@@ -25,13 +21,6 @@ public interface BookMapper {
 
     void updateModel(
             UpdateBookRequestDto updateBookRequestDto,
-            @MappingTarget Book book);
-
-    @BeanMapping(
-            nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-            nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
-    void partialUpdateModel(
-            PartialUpdateBookRequestDto dto,
             @MappingTarget Book book);
 
     BookDtoWithoutCategoryIds toDtoWithoutCategories(Book book);

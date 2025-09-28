@@ -2,7 +2,6 @@ package com.vdmytriv.bookstoreapp.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -47,8 +46,8 @@ public class Book {
     @Column(nullable = false)
     private boolean isDeleted = false;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "book_category",
+    @ManyToMany
+    @JoinTable(name = "books_categories",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )

@@ -2,6 +2,7 @@ package com.vdmytriv.bookstoreapp.controller;
 
 import com.vdmytriv.bookstoreapp.dto.book.BookDtoWithoutCategoryIds;
 import com.vdmytriv.bookstoreapp.dto.category.CategoryDto;
+import com.vdmytriv.bookstoreapp.dto.category.UpdateCategoryRequestDto;
 import com.vdmytriv.bookstoreapp.mapper.BookMapper;
 import com.vdmytriv.bookstoreapp.repository.book.BookRepository;
 import com.vdmytriv.bookstoreapp.service.category.CategoryService;
@@ -62,7 +63,8 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Update category")
-    public CategoryDto update(@PathVariable Long id, @RequestBody @Valid CategoryDto dto) {
+    public CategoryDto update(@PathVariable Long id,
+                              @RequestBody @Valid UpdateCategoryRequestDto dto) {
         return categoryService.update(id, dto);
     }
 

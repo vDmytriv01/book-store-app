@@ -1,6 +1,7 @@
 package com.vdmytriv.bookstoreapp.service.category;
 
 import com.vdmytriv.bookstoreapp.dto.category.CategoryDto;
+import com.vdmytriv.bookstoreapp.dto.category.UpdateCategoryRequestDto;
 import com.vdmytriv.bookstoreapp.mapper.CategoryMapper;
 import com.vdmytriv.bookstoreapp.model.Category;
 import com.vdmytriv.bookstoreapp.repository.category.CategoryRepository;
@@ -35,12 +36,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto update(Long id, CategoryDto dto) {
-        Category c = categoryRepository.findById(id)
+    public CategoryDto update(Long id, UpdateCategoryRequestDto dto) {
+        Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Category not found id=" + id));
-        c.setName(dto.name());
-        c.setDescription(dto.description());
-        return categoryMapper.toDto(categoryRepository.save(c));
+
+        categoryMapper.updateModel(dto, category);
+
+        return categoryMapper.toDto(categoryRepository.save(category));
     }
 
     @Override

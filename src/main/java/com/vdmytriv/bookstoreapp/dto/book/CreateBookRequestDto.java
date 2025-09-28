@@ -2,6 +2,7 @@ package com.vdmytriv.bookstoreapp.dto.book;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -30,6 +31,7 @@ public record CreateBookRequestDto(
         @Schema(description = "URL of the book cover image", example = "https://example.com/image.jpg")
         @NotBlank
         String coverImage,
+        @NotEmpty
         @Schema(description = "IDs of categories the book belongs to", example = "[1, 2]")
         List<Long> categoryIds
 ) {

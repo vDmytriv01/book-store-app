@@ -3,7 +3,6 @@ package com.vdmytriv.bookstoreapp.service.book;
 import com.vdmytriv.bookstoreapp.dto.book.BookDto;
 import com.vdmytriv.bookstoreapp.dto.book.BookSearchParametersDto;
 import com.vdmytriv.bookstoreapp.dto.book.CreateBookRequestDto;
-import com.vdmytriv.bookstoreapp.dto.book.PartialUpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.dto.book.UpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.exception.EntityNotFoundException;
 import com.vdmytriv.bookstoreapp.mapper.BookMapper;
@@ -44,17 +43,6 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new EntityNotFoundException("Book not found with id " + id));
         bookMapper.updateModel(requestDto, book);
         setCategoriesFromIds(book, requestDto.categoryIds());
-        return bookMapper.toDto(bookRepository.save(book));
-    }
-
-    @Override
-    public BookDto patch(Long id, PartialUpdateBookRequestDto requestDto) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book not found with id " + id));
-        bookMapper.partialUpdateModel(requestDto, book);
-        if (requestDto.categoryIds() != null) {
-            setCategoriesFromIds(book, requestDto.categoryIds());
-        }
         return bookMapper.toDto(bookRepository.save(book));
     }
 
