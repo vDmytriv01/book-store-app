@@ -18,5 +18,6 @@ public @interface FieldMatch {
     Class<? extends Payload>[] payload() default {};
 
     String field();
+
     String fieldMatch();
 }

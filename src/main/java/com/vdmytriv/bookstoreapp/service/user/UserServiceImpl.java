@@ -6,8 +6,10 @@ import com.vdmytriv.bookstoreapp.exception.RegistrationException;
 import com.vdmytriv.bookstoreapp.mapper.UserMapper;
 import com.vdmytriv.bookstoreapp.model.Role;
 import com.vdmytriv.bookstoreapp.model.RoleName;
+import com.vdmytriv.bookstoreapp.model.ShoppingCart;
 import com.vdmytriv.bookstoreapp.model.User;
 import com.vdmytriv.bookstoreapp.repository.role.RoleRepository;
+import com.vdmytriv.bookstoreapp.repository.shoppingcart.ShoppingCartRepository;
 import com.vdmytriv.bookstoreapp.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.Set;
@@ -23,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final ShoppingCartRepository shoppingCartRepository;
 
     @Override
     public UserResponseDto registration(UserRegisterRequestDto requestDto) {
@@ -36,6 +39,11 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toModel(requestDto);
         user.setRoles(Set.of(userRole));
         user.setPassword(passwordEncoder.encode(requestDto.password()));
-        return userMapper.toDto(userRepository.save(user));
+        User savedUser = userRepository.save(user);
+
+        ShoppingCart cart = new ShoppingCart();
+        cart.setUser(savedUser);
+        shoppingCartRepository.save(cart);
+        return userMapper.toDto(savedUser);
     }
 }

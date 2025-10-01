@@ -11,6 +11,7 @@ import java.util.List;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 @Mapper(config = MapperConfig.class)
 public interface BookMapper {
@@ -34,5 +35,15 @@ public interface BookMapper {
                     .toList();
             dto.categoryIds(ids);
         }
+    }
+
+    @Named("bookFromId")
+    default Book bookFromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        Book book = new Book();
+        book.setId(id);
+        return book;
     }
 }
