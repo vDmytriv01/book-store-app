@@ -13,3 +13,13 @@ databaseChangeLog:
       file: db/changelog/changes/06-seed-users.yaml
   - include:
       file: db/changelog/changes/07-assign-roles-to-users.yaml
+  - include:
+      file: db/changelog/changes/08-create-categories-table.yaml
+  - include:
+      file: db/changelog/changes/09-insert-category.yaml
+  - include:
+      file: db/changelog/changes/10-create-books-categories-table.yaml
+  - include:
+      file: db/changelog/changes/11-insert-books.yaml
+  - include:
+      file: db/changelog/changes/12-assign-category-to-book.yaml

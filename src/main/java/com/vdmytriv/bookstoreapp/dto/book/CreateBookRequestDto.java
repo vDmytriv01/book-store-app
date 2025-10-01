@@ -2,10 +2,12 @@ package com.vdmytriv.bookstoreapp.dto.book;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
+import java.util.List;
 
 public record CreateBookRequestDto(
         @Schema(description = "Title of the book", example = "Effective Java")
@@ -28,6 +30,9 @@ public record CreateBookRequestDto(
         String description,
         @Schema(description = "URL of the book cover image", example = "https://example.com/image.jpg")
         @NotBlank
-        String coverImage
+        String coverImage,
+        @NotEmpty
+        @Schema(description = "IDs of categories the book belongs to", example = "[1, 2]")
+        List<Long> categoryIds
 ) {
 }

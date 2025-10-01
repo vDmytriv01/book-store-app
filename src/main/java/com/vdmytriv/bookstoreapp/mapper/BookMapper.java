@@ -2,15 +2,15 @@ package com.vdmytriv.bookstoreapp.mapper;
 
 import com.vdmytriv.bookstoreapp.config.MapperConfig;
 import com.vdmytriv.bookstoreapp.dto.book.BookDto;
+import com.vdmytriv.bookstoreapp.dto.book.BookDtoWithoutCategoryIds;
 import com.vdmytriv.bookstoreapp.dto.book.CreateBookRequestDto;
-import com.vdmytriv.bookstoreapp.dto.book.PartialUpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.dto.book.UpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.model.Book;
-import org.mapstruct.BeanMapping;
+import com.vdmytriv.bookstoreapp.model.Category;
+import java.util.List;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValueCheckStrategy;
-import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(config = MapperConfig.class)
 public interface BookMapper {
@@ -23,10 +23,16 @@ public interface BookMapper {
             UpdateBookRequestDto updateBookRequestDto,
             @MappingTarget Book book);
 
-    @BeanMapping(
-            nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-            nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
-    void partialUpdateModel(
-            PartialUpdateBookRequestDto dto,
-            @MappingTarget Book book);
+    BookDtoWithoutCategoryIds toDtoWithoutCategories(Book book);
+
+    @AfterMapping
+    default void setCategoryIds(@MappingTarget BookDto.BookDtoBuilder dto, Book book) {
+        if (book.getCategories() != null) {
+            List<Long> ids = book.getCategories()
+                    .stream()
+                    .map(Category::getId)
+                    .toList();
+            dto.categoryIds(ids);
+        }
+    }
 }

@@ -3,7 +3,6 @@ package com.vdmytriv.bookstoreapp.controller;
 import com.vdmytriv.bookstoreapp.dto.book.BookDto;
 import com.vdmytriv.bookstoreapp.dto.book.BookSearchParametersDto;
 import com.vdmytriv.bookstoreapp.dto.book.CreateBookRequestDto;
-import com.vdmytriv.bookstoreapp.dto.book.PartialUpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.dto.book.UpdateBookRequestDto;
 import com.vdmytriv.bookstoreapp.service.book.BookService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -35,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
         produces = "application/json"
 )
 @Tag(name = "Books", description = "Endpoints for managing books")
-@SecurityRequirement(name = "basicAuth")
+@SecurityRequirement(name = "BearerAuth")
 public class BookController {
 
     private final BookService bookService;
@@ -85,16 +83,6 @@ public class BookController {
             @Parameter(description = "ID of the book to update") @PathVariable Long id,
             @RequestBody @Valid UpdateBookRequestDto requestDto) {
         return bookService.update(id, requestDto);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PatchMapping("/{id}")
-    @Operation(summary = "Partially update a book",
-            description = "Updates specified fields of a book.")
-    public BookDto patchBook(
-            @Parameter(description = "ID of the book to partially update") @PathVariable Long id,
-            @RequestBody @Valid PartialUpdateBookRequestDto requestDto) {
-        return bookService.patch(id, requestDto);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
