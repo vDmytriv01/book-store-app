@@ -29,8 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(
-        value = "/books",
-        produces = "application/json"
+        value = "/books"
 )
 @Tag(name = "Books", description = "Endpoints for managing books")
 @SecurityRequirement(name = "BearerAuth")

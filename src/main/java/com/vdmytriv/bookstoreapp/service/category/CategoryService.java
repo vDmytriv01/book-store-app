@@ -14,5 +14,5 @@ public interface CategoryService {
 
     CategoryDto update(Long id, UpdateCategoryRequestDto dto);
 
-    void deleteById(Long id); // soft-delete
+    void deleteById(Long id);
 }
