@@ -2,8 +2,8 @@ package com.vdmytriv.bookstoreapp.controller.category;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -77,8 +77,12 @@ class CategoryControllerTest {
         assertFalse(categories.isEmpty());
         CategoryDto actual = categories.get(0);
 
-        assertNotNull(actual.id());
-        assertEquals("Programming", actual.name());
+        CategoryDto expected = new CategoryDto(
+                actual.id(),
+                "Programming",
+                actual.description()
+        );
+        assertEquals(expected, actual);
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
@@ -97,9 +101,12 @@ class CategoryControllerTest {
         CategoryDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), CategoryDto.class);
 
-        assertNotNull(actual.id());
-        assertEquals(request.name(), actual.name());
-        assertEquals(request.description(), actual.description());
+        CategoryDto expected = new CategoryDto(
+                actual.id(),
+                request.name(),
+                request.description()
+        );
+        assertEquals(expected, actual);
     }
 
     @Sql(scripts = "classpath:database/category/add-test-category.sql",
@@ -123,8 +130,48 @@ class CategoryControllerTest {
         CategoryDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), CategoryDto.class);
 
-        assertNotNull(actual.id());
-        assertEquals(request.name(), actual.name());
-        assertEquals(request.description(), actual.description());
+        CategoryDto expected = new CategoryDto(
+                actual.id(),
+                request.name(),
+                request.description()
+        );
+        assertEquals(expected, actual);
+    }
+
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @Test
+    @DisplayName("Given invalid category data, when creating, then return 400 Bad Request")
+    void createCategory_InvalidRequest_ReturnsBadRequest() throws Exception {
+        CategoryDto invalid = new CategoryDto(null, "", "");
+        mockMvc.perform(post("/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalid)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @Test
+    @DisplayName("Given invalid update data, when updating, then return 400 Bad Request")
+    void updateCategory_InvalidRequest_ReturnsBadRequest() throws Exception {
+        UpdateCategoryRequestDto invalid = new UpdateCategoryRequestDto("", "");
+        mockMvc.perform(put("/categories/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalid)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Sql(scripts = "classpath:database/category/add-test-category.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "classpath:database/category/remove-test-category.sql",
+            executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @Test
+    @DisplayName("Given existing category, when deleting by id, then it is removed successfully")
+    void deleteCategoryById_Success() throws Exception {
+        mockMvc.perform(delete("/categories/{id}", 1L))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/categories/{id}", 1L))
+                .andExpect(status().isNotFound());
     }
 }

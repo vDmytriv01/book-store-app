@@ -9,10 +9,10 @@ import static org.mockito.Mockito.when;
 
 import com.vdmytriv.bookstoreapp.dto.category.CategoryDto;
 import com.vdmytriv.bookstoreapp.dto.category.UpdateCategoryRequestDto;
+import com.vdmytriv.bookstoreapp.exception.EntityNotFoundException;
 import com.vdmytriv.bookstoreapp.mapper.CategoryMapper;
 import com.vdmytriv.bookstoreapp.model.Category;
 import com.vdmytriv.bookstoreapp.repository.category.CategoryRepository;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,10 @@
 package com.vdmytriv.bookstoreapp.controller.book;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -85,14 +86,18 @@ class BookControllerTest {
         BookDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), BookDto.class);
 
-        assertNotNull(actual.id());
-        assertEquals(createBookRequest.title(), actual.title());
-        assertEquals(createBookRequest.author(), actual.author());
-        assertEquals(createBookRequest.isbn(), actual.isbn());
-        assertEquals(createBookRequest.price(), actual.price());
-        assertEquals(createBookRequest.description(), actual.description());
-        assertEquals(createBookRequest.coverImage(), actual.coverImage());
-        assertEquals(createBookRequest.categoryIds(), actual.categoryIds());
+        BookDto expected = new BookDto(
+                actual.id(),
+                createBookRequest.title(),
+                createBookRequest.author(),
+                createBookRequest.isbn(),
+                createBookRequest.price(),
+                createBookRequest.description(),
+                createBookRequest.coverImage(),
+                createBookRequest.categoryIds()
+        );
+
+        assertEquals(expected, actual);
     }
 
     @Sql(scripts = {
@@ -119,16 +124,20 @@ class BookControllerTest {
         });
 
         assertFalse(books.isEmpty());
-        BookDto actual = books.get(0);
 
-        assertNotNull(actual.id());
-        assertEquals("Effective Java", actual.title());
-        assertEquals("Joshua Bloch", actual.author());
-        assertEquals("978-3-16-148410-1", actual.isbn());
-        assertEquals(BigDecimal.valueOf(49.99), actual.price());
-        assertEquals("A book about Java best practices.", actual.description());
-        assertEquals("https://example.com/image.jpg", actual.coverImage());
-        assertEquals(List.of(1L), actual.categoryIds());
+        BookDto actual = books.get(0);
+        BookDto expected = new BookDto(
+                actual.id(),
+                "Effective Java",
+                "Joshua Bloch",
+                "978-3-16-148410-1",
+                BigDecimal.valueOf(49.99),
+                "A book about Java best practices.",
+                "https://example.com/image.jpg",
+                List.of(1L)
+        );
+
+        assertEquals(expected, actual);
     }
 
     @Sql(scripts = {
@@ -164,13 +173,66 @@ class BookControllerTest {
         BookDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), BookDto.class);
 
-        assertNotNull(actual.id());
-        assertEquals(updateBookRequestDto.title(), actual.title());
-        assertEquals(updateBookRequestDto.author(), actual.author());
-        assertEquals(updateBookRequestDto.isbn(), actual.isbn());
-        assertEquals(updateBookRequestDto.price(), actual.price());
-        assertEquals(updateBookRequestDto.description(), actual.description());
-        assertEquals(updateBookRequestDto.coverImage(), actual.coverImage());
-        assertEquals(updateBookRequestDto.categoryIds(), actual.categoryIds());
+        BookDto expected = new BookDto(
+                actual.id(),
+                updateBookRequestDto.title(),
+                updateBookRequestDto.author(),
+                updateBookRequestDto.isbn(),
+                updateBookRequestDto.price(),
+                updateBookRequestDto.description(),
+                updateBookRequestDto.coverImage(),
+                updateBookRequestDto.categoryIds()
+        );
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
+
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @Test
+    @DisplayName("Given invalid book data, when creating a book, then return 400 Bad Request")
+    void createBook_InvalidRequest_ReturnsBadRequest() throws Exception {
+        CreateBookRequestDto invalidRequest = new CreateBookRequestDto(
+                "", "", "", null, "", "", List.of()
+        );
+
+        mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @Test
+    @DisplayName("Given invalid update data, when updating a book, then return 400 Bad Request")
+    void updateBook_InvalidRequest_ReturnsBadRequest() throws Exception {
+        UpdateBookRequestDto invalidUpdate = new UpdateBookRequestDto(
+                "", "", "", null, "", "", List.of()
+        );
+
+        mockMvc.perform(put("/books/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidUpdate)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Sql(scripts = {
+            "classpath:database/category/add-test-category.sql",
+            "classpath:database/book/add-test-book.sql"
+    }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {
+            "classpath:database/book/remove-test-book.sql",
+            "classpath:database/category/remove-test-category.sql"
+    }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @Test
+    @DisplayName("Given existing book, when deleting by id, then it is removed successfully")
+    void deleteBookById_Success() throws Exception {
+
+        mockMvc.perform(delete("/books/{id}", 1L))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/books/{id}", 1L))
+                .andExpect(status().isNotFound());
+    }
+
 }
