@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 17-create-order-table
+      id: 12-create-order-table
       author: vdmytriv
       changes:
         - createTable:

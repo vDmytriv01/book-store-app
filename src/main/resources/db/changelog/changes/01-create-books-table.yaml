@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: 01-create-books-table
       author: vdmytriv
       changes:
         - createTable:
