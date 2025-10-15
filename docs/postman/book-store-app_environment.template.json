@@ -1,0 +1,33 @@
+{
+  "id": "97b01feb-8c86-4f3b-9fd3-501f9dd2b2c0",
+  "name": "admin",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8088/api",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "email",
+      "value": "admin@mail",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "password",
+      "value": "12345678",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2025-10-15T12:29:25.929Z",
+  "_postman_exported_using": "Postman/11.67.0"
+}
