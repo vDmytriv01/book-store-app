@@ -1,9 +1,11 @@
 package com.vdmytriv.bookstoreapp.repository.category;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.vdmytriv.bookstoreapp.config.CustomMySqlContainer;
 import com.vdmytriv.bookstoreapp.model.Category;
+import com.vdmytriv.bookstoreapp.util.TestDataFactory;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,9 +34,15 @@ class CategoryRepositoryTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("Given existing categories, When findById called, Then returns correct category")
     void findById_ExistingCategory_ReturnsCategory() {
-        Optional<Category> category = categoryRepository.findById(1L);
+        Optional<Category> actual = categoryRepository.findById(1L);
 
-        assertEquals(true, category.isPresent());
-        assertEquals("Programming", category.get().getName());
+        assertTrue(actual.isPresent(), "Category should be present");
+
+        Category expected = TestDataFactory.createCategory();
+
+        assertThat(actual.get())
+                .usingRecursiveComparison()
+                .ignoringFields("books")
+                .isEqualTo(expected);
     }
 }

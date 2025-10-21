@@ -1,11 +1,13 @@
 package com.vdmytriv.bookstoreapp.repository.book;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.vdmytriv.bookstoreapp.config.CustomMySqlContainer;
 import com.vdmytriv.bookstoreapp.model.Book;
-import java.math.BigDecimal;
+import com.vdmytriv.bookstoreapp.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -41,15 +43,16 @@ class BookRepositoryTest {
         Page<Book> result = bookRepository.findAllByCategories_Id(1L, PageRequest.of(0, 10));
 
         assertEquals(1, result.getTotalElements(), "Expected one book in category 1");
-        Book book = result.getContent().get(0);
-        assertNotNull(book);
+        assertTrue(result.hasContent(), "Result should contain books");
 
-        assertEquals(1L, book.getId());
-        assertEquals("Effective Java", book.getTitle());
-        assertEquals("Joshua Bloch", book.getAuthor());
-        assertEquals("978-3-16-148410-1", book.getIsbn());
-        assertEquals(BigDecimal.valueOf(49.99), book.getPrice());
-        assertEquals("A book about Java best practices.", book.getDescription());
-        assertEquals("https://example.com/image.jpg", book.getCoverImage());
+        Book actual = result.getContent().get(0);
+        assertNotNull(actual, "Book should not be null");
+
+        Book expected = TestDataFactory.createBook();
+
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .ignoringFields("id", "categories")
+                .isEqualTo(expected);
     }
 }

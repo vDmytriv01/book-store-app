@@ -1,6 +1,6 @@
 package com.vdmytriv.bookstoreapp.service.category;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
@@ -13,6 +13,7 @@ import com.vdmytriv.bookstoreapp.exception.EntityNotFoundException;
 import com.vdmytriv.bookstoreapp.mapper.CategoryMapper;
 import com.vdmytriv.bookstoreapp.model.Category;
 import com.vdmytriv.bookstoreapp.repository.category.CategoryRepository;
+import com.vdmytriv.bookstoreapp.util.TestDataFactory;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,21 +38,11 @@ class CategoryServiceImplTest {
     @DisplayName("Given valid CategoryDto, "
             + "when save called, then category is saved and mapped to DTO")
     void save_ValidRequest_Success() {
+        CategoryDto request = new CategoryDto(null, "Programming", "Tech books");
 
-        Category mapped = new Category();
-        mapped.setName("Technology");
-        mapped.setDescription("Books about IT and programming");
-
-        Category saved = new Category();
-        saved.setId(1L);
-        saved.setName("Technology");
-        saved.setDescription("Books about IT and programming");
-
-        CategoryDto request = new CategoryDto(
-                null, "Technology", "Books about IT and programming");
-
-        CategoryDto expected = new CategoryDto(
-                1L, "Technology", "Books about IT and programming");
+        Category mapped = TestDataFactory.createCategory().toBuilder().id(null).build();
+        Category saved = TestDataFactory.createCategory();
+        CategoryDto expected = new CategoryDto(1L, "Programming", "Tech books");
 
         when(categoryMapper.toModel(request)).thenReturn(mapped);
         when(categoryRepository.save(mapped)).thenReturn(saved);
@@ -59,7 +50,10 @@ class CategoryServiceImplTest {
 
         CategoryDto actual = categoryService.save(request);
 
-        assertEquals(expected, actual);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
+
         verify(categoryMapper).toModel(request);
         verify(categoryRepository).save(mapped);
         verify(categoryMapper).toDto(saved);
@@ -70,20 +64,17 @@ class CategoryServiceImplTest {
             + " when update called, then fields are updated and DTO returned")
     void update_ExistingCategory_Success() {
         Long categoryId = 1L;
+        Category existing = TestDataFactory.createCategory();
 
-        Category existing = new Category();
-        existing.setId(categoryId);
-        existing.setName("Old Name");
-        existing.setDescription("Old Description");
-        UpdateCategoryRequestDto request = new UpdateCategoryRequestDto(
-                "Updated Name", "Updated Description");
+        UpdateCategoryRequestDto request =
+                new UpdateCategoryRequestDto("Updated Name", "Updated Description");
+        Category updatedCategory = existing.toBuilder()
+                .name(request.name())
+                .description(request.description())
+                .build();
 
-        Category updated = new Category();
-        updated.setId(categoryId);
-        updated.setName(request.name());
-        updated.setDescription(request.description());
-
-        CategoryDto expected = new CategoryDto(categoryId, request.name(), request.description());
+        CategoryDto expectedDto =
+                new CategoryDto(categoryId, request.name(), request.description());
 
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(existing));
         doAnswer(invocation -> {
@@ -94,16 +85,19 @@ class CategoryServiceImplTest {
             return null;
         }).when(categoryMapper).updateModel(request, existing);
 
-        when(categoryRepository.save(existing)).thenReturn(updated);
-        when(categoryMapper.toDto(updated)).thenReturn(expected);
+        when(categoryRepository.save(existing)).thenReturn(updatedCategory);
+        when(categoryMapper.toDto(updatedCategory)).thenReturn(expectedDto);
 
         CategoryDto actual = categoryService.update(categoryId, request);
 
-        assertEquals(expected, actual);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expectedDto);
+
         verify(categoryRepository).findById(categoryId);
         verify(categoryMapper).updateModel(request, existing);
         verify(categoryRepository).save(existing);
-        verify(categoryMapper).toDto(updated);
+        verify(categoryMapper).toDto(updatedCategory);
     }
 
     @Test

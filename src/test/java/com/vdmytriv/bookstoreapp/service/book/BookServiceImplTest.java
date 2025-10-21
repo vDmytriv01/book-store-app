@@ -1,6 +1,6 @@
 package com.vdmytriv.bookstoreapp.service.book;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
@@ -16,6 +16,7 @@ import com.vdmytriv.bookstoreapp.model.Book;
 import com.vdmytriv.bookstoreapp.model.Category;
 import com.vdmytriv.bookstoreapp.repository.book.BookRepository;
 import com.vdmytriv.bookstoreapp.repository.category.CategoryRepository;
+import com.vdmytriv.bookstoreapp.util.TestDataFactory;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -46,44 +47,20 @@ class BookServiceImplTest {
     @DisplayName("Given valid CreateBookRequestDto, "
             + "when save called, then book is persisted and mapped to DTO")
     void save_ValidRequest_Success() {
-        CreateBookRequestDto request = new CreateBookRequestDto(
-                "Effective Java",
-                "Joshua Bloch",
-                "978-3-16-148410-0",
-                BigDecimal.valueOf(49.99),
-                "A book about Java best practices",
-                "https://example.com/image.jpg",
-                List.of(1L)
-        );
+        CreateBookRequestDto request = TestDataFactory.createBookRequestDto();
 
-        Book book = new Book();
-        book.setTitle(request.title());
-        book.setAuthor(request.author());
-        book.setIsbn(request.isbn());
-        book.setPrice(request.price());
+        Book book = TestDataFactory.createBook();
 
         Category category = new Category();
         category.setId(1L);
         when(categoryRepository.getReferenceById(1L)).thenReturn(category);
 
-        Book savedBook = new Book();
-        savedBook.setId(1L);
-        savedBook.setTitle(request.title());
-        savedBook.setAuthor(request.author());
-        savedBook.setIsbn(request.isbn());
-        savedBook.setPrice(request.price());
-        savedBook.setCategories(Set.of(category));
+        Book savedBook = TestDataFactory.createBook()
+                .toBuilder()
+                .categories(Set.of(category))
+                .build();
 
-        BookDto expectedDto = new BookDto(
-                1L,
-                request.title(),
-                request.author(),
-                request.isbn(),
-                request.price(),
-                request.description(),
-                request.coverImage(),
-                request.categoryIds()
-        );
+        BookDto expectedDto = TestDataFactory.createBookDto();
 
         when(bookMapper.toModel(request)).thenReturn(book);
         when(bookRepository.save(book)).thenReturn(savedBook);
@@ -91,7 +68,10 @@ class BookServiceImplTest {
 
         BookDto actual = bookService.save(request);
 
-        assertEquals(expectedDto, actual);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expectedDto);
+
         verify(bookRepository).save(book);
         verify(categoryRepository).getReferenceById(1L);
     }
@@ -101,42 +81,16 @@ class BookServiceImplTest {
             + "when update called, then fields are updated and DTO returned")
     void update_ExistingBook_Success() {
         Long bookId = 1L;
-        Book existingBook = new Book();
-        existingBook.setId(bookId);
-        existingBook.setTitle("Old title");
+        Book existingBook = TestDataFactory.createBook();
 
-        Category category = new Category();
-        category.setId(1L);
+        Category category = TestDataFactory.createCategory();
         when(categoryRepository.getReferenceById(1L)).thenReturn(category);
 
-        UpdateBookRequestDto request = new UpdateBookRequestDto(
-                "New title",
-                "Joshua Bloch",
-                "978-3-16-148410-0",
-                BigDecimal.valueOf(59.99),
-                "Updated description",
-                "https://example.com/image.jpg",
-                List.of(1L)
-        );
+        UpdateBookRequestDto request = TestDataFactory.createUpdateBookRequest();
 
-        Book updatedBook = new Book();
-        updatedBook.setId(bookId);
-        updatedBook.setTitle(request.title());
-        updatedBook.setAuthor(request.author());
-        updatedBook.setIsbn(request.isbn());
-        updatedBook.setPrice(request.price());
-        updatedBook.setCategories(Set.of(category));
+        Book updatedBook = TestDataFactory.createBook();
 
-        BookDto expectedDto = new BookDto(
-                bookId,
-                request.title(),
-                request.author(),
-                request.isbn(),
-                request.price(),
-                request.description(),
-                request.coverImage(),
-                request.categoryIds()
-        );
+        BookDto expectedDto = TestDataFactory.createBookDto();
 
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(existingBook));
         doAnswer(invocation -> {
@@ -153,7 +107,10 @@ class BookServiceImplTest {
 
         BookDto actual = bookService.update(bookId, request);
 
-        assertEquals(expectedDto, actual);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expectedDto);
+
         verify(bookRepository).findById(bookId);
         verify(bookRepository).save(existingBook);
         verify(categoryRepository).getReferenceById(1L);

@@ -1,7 +1,8 @@
 package com.vdmytriv.bookstoreapp.controller.category;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -82,7 +83,9 @@ class CategoryControllerTest {
                 "Programming",
                 actual.description()
         );
-        assertEquals(expected, actual);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
@@ -106,7 +109,9 @@ class CategoryControllerTest {
                 request.name(),
                 request.description()
         );
-        assertEquals(expected, actual);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Sql(scripts = "classpath:database/category/add-test-category.sql",
@@ -135,7 +140,9 @@ class CategoryControllerTest {
                 request.name(),
                 request.description()
         );
-        assertEquals(expected, actual);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
@@ -171,7 +178,8 @@ class CategoryControllerTest {
         mockMvc.perform(delete("/categories/{id}", 1L))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/categories/{id}", 1L))
+        mockMvc.perform(get("/categories/{id}", 1L)
+                        .with(user("user").roles("USER")))
                 .andExpect(status().isNotFound());
     }
 }

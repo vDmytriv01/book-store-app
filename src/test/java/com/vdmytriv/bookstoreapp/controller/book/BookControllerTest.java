@@ -1,8 +1,8 @@
 package com.vdmytriv.bookstoreapp.controller.book;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -16,7 +16,7 @@ import com.vdmytriv.bookstoreapp.config.CustomMySqlContainer;
 import com.vdmytriv.bookstoreapp.dto.book.BookDto;
 import com.vdmytriv.bookstoreapp.dto.book.CreateBookRequestDto;
 import com.vdmytriv.bookstoreapp.dto.book.UpdateBookRequestDto;
-import java.math.BigDecimal;
+import com.vdmytriv.bookstoreapp.util.TestDataFactory;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
@@ -65,15 +65,7 @@ class BookControllerTest {
     @DisplayName("Given valid book data, when creating a book, then it is successfully created")
     void createBook_ValidRequestDto_Success() throws Exception {
 
-        CreateBookRequestDto createBookRequest = new CreateBookRequestDto(
-                "Effective Java",
-                "Joshua Bloch",
-                "978-3-16-148410-0",
-                BigDecimal.valueOf(49.99),
-                "A book about Java best practices.",
-                "https://example.com/image.jpg",
-                List.of(1L)
-        );
+        CreateBookRequestDto createBookRequest = TestDataFactory.createBookRequestDto();
 
         String jsonRequest = objectMapper.writeValueAsString(createBookRequest);
 
@@ -97,7 +89,9 @@ class BookControllerTest {
                 createBookRequest.categoryIds()
         );
 
-        assertEquals(expected, actual);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Sql(scripts = {
@@ -126,18 +120,14 @@ class BookControllerTest {
         assertFalse(books.isEmpty());
 
         BookDto actual = books.get(0);
-        BookDto expected = new BookDto(
-                actual.id(),
-                "Effective Java",
-                "Joshua Bloch",
-                "978-3-16-148410-1",
-                BigDecimal.valueOf(49.99),
-                "A book about Java best practices.",
-                "https://example.com/image.jpg",
-                List.of(1L)
-        );
+        BookDto expected = TestDataFactory.createBookDto()
+                .toBuilder()
+                .id(actual.id())
+                .build();
 
-        assertEquals(expected, actual);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Sql(scripts = {
@@ -152,15 +142,7 @@ class BookControllerTest {
     @Test
     @DisplayName("Given existing book, when updating, then it is updated successfully")
     void updateBook_ValidRequestDto_Success() throws Exception {
-        UpdateBookRequestDto updateBookRequestDto = new UpdateBookRequestDto(
-                "Effective Java Updated",
-                "Joshua Bloch",
-                "978-3-16-148410-0",
-                BigDecimal.valueOf(59.99),
-                "Updated description.",
-                "https://example.com/image-new.jpg",
-                List.of(1L)
-        );
+        UpdateBookRequestDto updateBookRequestDto = TestDataFactory.createUpdateBookRequest();
 
         String jsonRequest = objectMapper.writeValueAsString(updateBookRequestDto);
 
@@ -173,18 +155,20 @@ class BookControllerTest {
         BookDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), BookDto.class);
 
-        BookDto expected = new BookDto(
-                actual.id(),
-                updateBookRequestDto.title(),
-                updateBookRequestDto.author(),
-                updateBookRequestDto.isbn(),
-                updateBookRequestDto.price(),
-                updateBookRequestDto.description(),
-                updateBookRequestDto.coverImage(),
-                updateBookRequestDto.categoryIds()
-        );
+        BookDto expected = TestDataFactory.createBookDto()
+                .toBuilder()
+                .id(actual.id())
+                .title(updateBookRequestDto.title())
+                .isbn(updateBookRequestDto.isbn())
+                .price(updateBookRequestDto.price())
+                .description(updateBookRequestDto.description())
+                .coverImage(updateBookRequestDto.coverImage())
+                .categoryIds(updateBookRequestDto.categoryIds())
+                .build();
 
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
@@ -231,7 +215,8 @@ class BookControllerTest {
         mockMvc.perform(delete("/books/{id}", 1L))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/books/{id}", 1L))
+        mockMvc.perform(get("/books/{id}", 1L)
+                        .with(user("user").roles("USER")))
                 .andExpect(status().isNotFound());
     }
 
