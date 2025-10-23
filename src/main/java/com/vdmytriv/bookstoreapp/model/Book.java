@@ -12,7 +12,10 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -23,6 +26,9 @@ import org.hibernate.annotations.SQLRestriction;
 @Setter
 @SQLRestriction("is_deleted = false")
 @SQLDelete(sql = "UPDATE books SET is_deleted = true WHERE id = ?")
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,10 +49,12 @@ public class Book {
 
     private String coverImage;
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean isDeleted = false;
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(name = "books_categories",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")

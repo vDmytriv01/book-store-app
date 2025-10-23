@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import lombok.Builder;
 
-@Builder
+@Builder(toBuilder = true)
 public record BookDto(
         @Schema(description = "Unique identifier", example = "1")
         Long id,

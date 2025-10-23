@@ -2,10 +2,10 @@ package com.vdmytriv.bookstoreapp.service.category;
 
 import com.vdmytriv.bookstoreapp.dto.category.CategoryDto;
 import com.vdmytriv.bookstoreapp.dto.category.UpdateCategoryRequestDto;
+import com.vdmytriv.bookstoreapp.exception.EntityNotFoundException;
 import com.vdmytriv.bookstoreapp.mapper.CategoryMapper;
 import com.vdmytriv.bookstoreapp.model.Category;
 import com.vdmytriv.bookstoreapp.repository.category.CategoryRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
